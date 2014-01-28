@@ -33,19 +33,22 @@
 
 				$.each(data.photos.photo, function(i, item){
 
-					//http://farm{farm}.staticflickr.com/{server}/{id}_{secret}_b.jpg
+					// Unpack response data from Flickr to assmble valid IMG SRC URL
 					var img_src = "http://farm" + item.farm
 						+ ".staticflickr.com/" + item.server
 						+ "/" + item.id + "_" + item.secret + "_b.jpg";
 
-					console.log("item=" + i + " photo url=" + img_src);
-
 					if ( i == 0 ) {
-						$('.carousel-inner').append('<div class="item active"><img class="centered" src="' + img_src
-							+ '" /><div class="carousel-caption"><h3>' + item.title + '</h3></div></div>');
+						// First carousel DIV is active
+						$('.carousel-inner').append('<div class="item active"><img class="centered" src="'
+							+ img_src
+							+ '" /><div class="carousel-caption"><h3>'
+							+ item.title + '</h3></div></div>');
 					} else {
-						$('.carousel-inner').append('<div class="item"><img class="centered" src="' + img_src
-							+ '" /><div class="carousel-caption"><h3>' + item.title + '</h3></div></div>');
+						$('.carousel-inner').append('<div class="item"><img class="centered" src="'
+							+ img_src
+							+ '" /><div class="carousel-caption"><h3>'
+							+ item.title + '</h3></div></div>');
 					}
 
 				});
