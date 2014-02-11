@@ -1,81 +1,223 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<title>Photo Travel</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
-	<script src="https://code.jquery.com/jquery.js"></script>
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+  <!-- Bootstrap mobile viewport -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Custom compiled and minified CSS -->
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <!-- jQuery necessary for Bootstrap -->
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <!-- Compiled and minified JavaScript -->
+  <script src="js/bootstrap.min.js"></script>
 
-	<script type="text/javascript">
-	
-	// jQuery
-	//
-	// * Make AJAX call to fetch 5 photos from specified Flickr group
-	// * Populate Bootstrap carousel with Image and Caption
+  <script src="js/album.js"></script>
+  
+  <script type="text/javascript">
 
-	$( document ).ready(function() {
+  // jQuery
+  //
+  $( document ).ready(function() {
 
-		var api_key = "[YOUR FLICKR API KEY]";
-		var method = "flickr.groups.pools.getPhotos";
-		var group_id = "341060@N25"; // groups/travelphotojournalism/
+    // Populate Carousel on Document Ready
+    //
+    var photoAlbum = new Album("432634@N24");
 
-		// Flicker URL API
-		var url = "http://api.flickr.com/services/rest/?&api_key=" + api_key
-			+ "&method=" + method
-			+ "&group_id=" + group_id
-			+ "&per_page=5&format=json&jsoncallback=?";
+    $('.carousel-inner').addClass("loading");
+    photoAlbum.getPhotos( function(photos, captions) {      
+      populate(photos, captions);
+    });
 
+    // Navbar
+    //
+    $('.nav li a').on('click', function() {
 
-		$.getJSON( url, function( data ) {
+      // Set menu focus
+      $(this).parent().parent().find('.active').removeClass('active');
+      $(this).parent().addClass('active');
 
-			if (data.stat == "ok") {
+      // Set new photo album
+      var id = $(this).attr('id');
+      photoAlbum.setId(id);
 
-				$.each(data.photos.photo, function(i, item){
+      // Clear and repopulate Carousel
+      $( ".carousel-inner" ).empty();
+      $('.carousel-inner').addClass("loading");
+      photoAlbum.getPhotos( function (photos, captions) {
+        populate(photos, captions);
+      });
+    
+    });
 
-					// Unpack response data from Flickr to assmble valid IMG SRC URL
-					var img_src = "http://farm" + item.farm
-						+ ".staticflickr.com/" + item.server
-						+ "/" + item.id + "_" + item.secret + "_b.jpg";
+  });
+  
+  var populate = function (photos, captions) {
 
-					if ( i == 0 ) {
-						// First carousel DIV is active
-						$('.carousel-inner').append('<div class="item active"><img class="centered" src="'
-							+ img_src
-							+ '" /><div class="carousel-caption"><h3>'
-							+ item.title + '</h3></div></div>');
-					} else {
-						$('.carousel-inner').append('<div class="item"><img class="centered" src="'
-							+ img_src
-							+ '" /><div class="carousel-caption"><h3>'
-							+ item.title + '</h3></div></div>');
-					}
+    for (var i = 0; i < photos.length; i++ ) {
+      if (i == 0) {
+        $('.carousel-inner').append('<div class="item active"><img src="'
+          + photos[i] + '" /><div class="carousel-caption"><h3>'
+          + captions[i] + '</h3></div></div>');
+      } else {
+        $('.carousel-inner').append('<div class="item"><img src="'
+          + photos[i] + '" /><div class="carousel-caption"><h3>'
+          + captions[i] + '</h3></div></div>');            
+      }
+    }
+    // Reset Carousel
+    $('.carousel-inner').removeClass("loading");
+    $('.carousel').carousel(0);      
+  };
 
-				});
-			}
+  </script>
 
-		});
+<style type="text/css">
 
-	});
-	
-	</script>
-	
-	<style type="text/css">
-	
-	.centered{
-    	margin: 0 auto;
-	}
-	.carousel .item {
-		height: 600px;
- 		background-color: #888;
-	}
+.container-fluid {
+  padding-right: 0;
+  padding-left: 0;
+}
+.loading {
+  background-image: url("img/loader.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.help-block {
+    color: #336699;
+}
+.carousel {
+  background-color: #AAA;
+}
+.carousel-caption {
+  z-index: 10;
+}
+.carousel-inner > .item > img {
+  margin: 0 auto;
+}
+.title {
+  color: #CC0000;
+}
+footer a {
+  color: #6699CC;
+}
 
-	</style>
+/* Responsive Web Design */
+
+/* Position navbar for devices less than 768px */
+.navbar-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  opacity: 0.6;
+}
+/* No padding around container when stuck to top */
+.navbar-wrapper .container {
+  padding-left: 0;
+  padding-right: 0;
+}
+.navbar-wrapper .navbar {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+/* Detach navbar for devices 768px and up */
+@media (min-width: 768px) {
+  .navbar-wrapper {
+    margin-top: 10px;
+  }
+  /* Padding around container when detached from top */
+  .navbar-wrapper .container {
+    padding-left:  15px;
+    padding-right: 15px;
+  }
+  .navbar-wrapper .navbar {
+    padding-left:  0;
+    padding-right: 0;
+  }
+  .navbar-wrapper .navbar {
+    border-radius: 5px;
+  }
+
+}
+
+/* Zone 1: Extra small devices (smartphones less than 768px) */
+@media screen and (max-width: 768px) {
+  .carousel .item {
+    min-height: 200px;
+    max-height: 200px;
+  }
+  .carousel .item img {
+    min-height: 200px;
+    max-height: 200px
+  }
+  .loading {
+    height: 200px;
+  }
+}
+
+/* Zone 2: Small devices (pads 768px and up ) */
+@media screen and (min-width: 768px) {
+  .carousel .item {
+    min-height: 400px;
+    max-height: 400px;
+  }
+  .carousel .item img {
+    min-height: 400px;
+    max-height: 400px
+  }
+  .loading {
+    height: 400px;
+  }
+}
+
+/* Zone 3: Medium devices (desktops, 992px and up) */
+@media screen and (min-width: 992px) {
+  .carousel .item {
+    min-height: 550px;
+    max-height: 550px;
+  }
+  .carousel .item img {
+    min-height: 550px;
+    max-height: 550px;
+  }
+  .loading {
+    height: 550px;
+  }
+}
+
+</style>
 
 </head>
 <body>
 
-<div id="carousel-flickr" class="carousel slide" data-ride="carousel" data-wrap="true">
+<nav class="navbar-wrapper">
+  <div class="container">
+    <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Photo Travel</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#places" id="432634@N24">Places</a></li> <!-- 1,000 Best Places -->
+            <li><a href="#people" id="1325904@N22">People</a></li> <!-- People All Around the World -->
+            <li><a href="#food" id="52242418890@N01">Food</a></li> <!-- I Ata That -->
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<section id="carousel-flickr" class="carousel slide" data-ride="carousel" data-wrap="true">
   <!-- Indicators -->
   <ol class="carousel-indicators">
     <li data-target="#carousel-flickr" data-slide-to="0" class="active"></li>
@@ -85,10 +227,8 @@
     <li data-target="#carousel-flickr" data-slide-to="4"></li>
   </ol>
 
-  <!-- Wrapper for 5 slides -->
+  <!-- jQuery target element for populating 5 photos and captions -->
   <div class="carousel-inner">
-
-
   </div>
 
   <!-- Controls -->
@@ -98,7 +238,46 @@
   <a class="right carousel-control" href="#carousel-flickr" data-slide="next">
     <span class="glyphicon glyphicon-chevron-right"></span>
   </a>
-</div>
+</section>
+
+<header class="container-fluid">
+  <div class="jumbotron">
+    <h2>Photo Travel</h2>
+    <p>A project with HTML5, CSS3, Object-Oriented JavaScript, jQuery, AJAX, Bootstrap &amp; Responsive Web Design</p>
+    <a href="https://github.com/forthmedia/phototravel/" class="btn btn-primary btn-lg">See the Code</a>
+    <small class="help-block">Browse the source code on GitHub</small>
+  </div>
+</header>
+
+<article class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <h3 class="title">OO JavaScript</h3>
+        <p>This online album presents photographs of Places, People and Food from around the world, from a constantly updating photo stream at Flickr. Click on the menu to change topics.</p>
+        <p>At the core of this project is a JavaScript Object that manages asynchronous data acquisition from a web service, in a way that approximates an OOP pattern of private, privileged, and public properties and methods in JavaScript.</p>
+    </div>
+    <div class="col-md-4">
+      <h3 class="title">Media Queries</h3>
+      <p>This page will dynamically adapt to smartphones, pads, and desktop using CSS3 media queries. On small screen mobile devices the floating menu collapses and attaches to the top of the screen.</p>
+      <p>On a desktop computer, you can see the Responsive Web Design in action, by changing the width of the browser window. The photo carousel adjusts to small, medium and large displays.</p>
+    </div>
+    <div class="col-md-4">
+      <h3 class="title">Gotcha's</h3>
+      <p>The convenience of a JavaScript helper class is complicated by asynchronous communication with a web service, "in the background." A synchronous function call would degrade the responsiveness of the "front end" client.</p>
+      <p>To solve this, the Object API requires a callback function, which returns to the caller when the response is available.</p>
+    </div>    
+  </div>
+</article>
+
+<hr class="featurette-divider">
+  
+  <section class="container">
+    <p>See a project with cool cars and a PHP full stack implementation: <a href="http://www.forth-media.com/photocars/">Photo Cars</a></p>
+  </section>
+
+<hr class="featurette-divider">
+
+<footer class="container">Kurt Jonach@Forthmedia</footer>
 
 </body>
 </html>
