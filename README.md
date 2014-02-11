@@ -13,7 +13,7 @@ MEDIA QUERIES
 
 This page will dynamically adapt to smartphones, pads, and desktop using CSS3 media queries. On small screen mobile devices the floating menu collapses and attaches to the top of the screen.
 
-There is a Bootstrap JavaScript carousel component for the slide show, populated by jQuery selector API, using info from Flick for the photos and captions. Please note that you will need your own Flickr API Key to run this example.
+There is a Bootstrap JavaScript carousel component for the slide show, populated with images and captions formated by the JS helper class. Please note that you will need your own Flickr API Key to run this example.
 
 GOTHCHA - ASYNCHRONOUS CALLBACK
 
