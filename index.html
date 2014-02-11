@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Photo Travel</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+	<script type="text/javascript">
+	
+	// jQuery
+	//
+	// * Make AJAX call to fetch 5 photos from specified Flickr group
+	// * Populate Bootstrap carousel with Image and Caption
+
+	$( document ).ready(function() {
+
+		var api_key = "[YOUR FLICKR API KEY]";
+		var method = "flickr.groups.pools.getPhotos";
+		var group_id = "341060@N25"; // groups/travelphotojournalism/
+
+		// Flicker URL API
+		var url = "http://api.flickr.com/services/rest/?&api_key=" + api_key
+			+ "&method=" + method
+			+ "&group_id=" + group_id
+			+ "&per_page=5&format=json&jsoncallback=?";
+
+
+		$.getJSON( url, function( data ) {
+
+			if (data.stat == "ok") {
+
+				$.each(data.photos.photo, function(i, item){
+
+					// Unpack response data from Flickr to assmble valid IMG SRC URL
+					var img_src = "http://farm" + item.farm
+						+ ".staticflickr.com/" + item.server
+						+ "/" + item.id + "_" + item.secret + "_b.jpg";
+
+					if ( i == 0 ) {
+						// First carousel DIV is active
+						$('.carousel-inner').append('<div class="item active"><img class="centered" src="'
+							+ img_src
+							+ '" /><div class="carousel-caption"><h3>'
+							+ item.title + '</h3></div></div>');
+					} else {
+						$('.carousel-inner').append('<div class="item"><img class="centered" src="'
+							+ img_src
+							+ '" /><div class="carousel-caption"><h3>'
+							+ item.title + '</h3></div></div>');
+					}
+
+				});
+			}
+
+		});
+
+	});
+	
+	</script>
+	
+	<style type="text/css">
+	
+	.centered{
+    	margin: 0 auto;
+	}
+	.carousel .item {
+		height: 600px;
+ 		background-color: #888;
+	}
+
+	</style>
+
+</head>
+<body>
+
+<div id="carousel-flickr" class="carousel slide" data-ride="carousel" data-wrap="true">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#carousel-flickr" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel-flickr" data-slide-to="1"></li>
+    <li data-target="#carousel-flickr" data-slide-to="2"></li>
+    <li data-target="#carousel-flickr" data-slide-to="3"></li>
+    <li data-target="#carousel-flickr" data-slide-to="4"></li>
+  </ol>
+
+  <!-- Wrapper for 5 slides -->
+  <div class="carousel-inner">
+
+
+  </div>
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel-flickr" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left"></span>
+  </a>
+  <a class="right carousel-control" href="#carousel-flickr" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right"></span>
+  </a>
+</div>
+
+</body>
+</html>
